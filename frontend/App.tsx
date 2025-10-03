@@ -13,7 +13,7 @@ interface AppProps {}
 
 const App: React.FC<AppProps> = () => {
   return (
-    <Provider store={store}>
+    <Provider store={store}> // Providing the Redux store to the app (i.e setting up the whiteboard in the office)
       <SafeAreaProvider>
         <GluestackUIProvider config={config}>
           <AppNavigator />

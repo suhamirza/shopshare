@@ -1,0 +1,6 @@
+# Global ignore for project root
+
+# Environment variables
+/.env          
+
+# ... (other ignores like node_modules/, dist/, etc.) ...

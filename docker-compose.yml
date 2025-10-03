@@ -1,0 +1,40 @@
+# C:\Users\suham\OneDrive\Desktop\Coding\shopshare\docker-compose.yml
+version: '3.8'
+
+services:
+  database:
+    image: postgres:15-alpine
+    container_name: shopshare_postgres
+    restart: always
+    environment:
+      POSTGRES_DB:  ${DB_NAME} 
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432" # Expose for host access (e.g., DBeaver)
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: shopshare_backend
+    restart: always
+    environment: # These are the env vars for the backend container
+      PORT:  ${PORT}
+      DB_HOST: database # <--- Backend container connects to 'database' service
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+volumes:
+  db_data:

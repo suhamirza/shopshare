@@ -1,15 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+// frontend/src/store/auth/authSlice.ts
 
-// Define the user interface
-interface User {
-  id: string;
-  email: string;
-  firstName: string;
-}
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { User } from '../../types';
 
 // Define the auth state interface
 interface AuthState {
-  user: User | null;
+  user: User | null; // Uses the imported User interface
   token: string | null;
 }
 
@@ -27,7 +23,8 @@ const authSlice = createSlice({
     // Placeholder reducer to set auth status
     setAuthStatus: (
       state,
-      action: PayloadAction<{ user: AuthState['user']; token: AuthState['token'] }>
+      // Uses the imported User interface in PayloadAction as well
+      action: PayloadAction<{ user: User | null; token: AuthState['token'] }>
     ) => {
       state.user = action.payload.user;
       state.token = action.payload.token;

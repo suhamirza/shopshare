@@ -1,5 +1,4 @@
 # C:\Users\suham\OneDrive\Desktop\Coding\shopshare\docker-compose.yml
-version: '3.8'
 
 services:
   database:
@@ -14,6 +13,12 @@ services:
       - "5432:5432" # Expose for host access (e.g., DBeaver)
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck: # <--- ADD THIS SECTION FOR HEALTHCHECK
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s # Give Postgres some time to initialize before checking
 
   backend:
     build:
@@ -30,8 +35,9 @@ services:
       DB_NAME: ${DB_NAME}
     ports:
       - "3000:3000"
-    depends_on:
-      - database
+    depends_on: # <--- MODIFY THIS DEPENDS_ON SECTION
+      database:
+        condition: service_healthy # <--- CHANGE 'service_started' (if it was there) to 'service_healthy'
     volumes:
       - ./backend:/app
       - /app/node_modules

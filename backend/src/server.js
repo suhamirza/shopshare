@@ -1,5 +1,7 @@
 // backend/src/server.js
-const express = require('express'); // Changed from import to require
+require('dotenv').config(); // Load environment variables as early as possible
+const express = require('express');
+const { AppDataSource } = require('./config/database'); // Import AppDataSource
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -12,7 +14,12 @@ app.get('/', (req, res) => {
   res.send('ShopShare Backend is Running!');
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+// --- Start the server ONLY after the database connection is established ---
+AppDataSource.initialize()
+  .then(() => {
+    console.log("Database connected successfully!");
+    app.listen(port, () => {
+      console.log(`Server is running on http://localhost:${port}`);
+    });
+  })
+  .catch((error) => console.error("Database connection error:", error));
